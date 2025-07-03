@@ -380,18 +380,38 @@ int main(void)
 		HAL_MPU_ConfigRegion(&mpu_reg);
 
 		// QUADSPI
-		// Write through, no write allocate
-		mpu_reg.Enable = MPU_REGION_ENABLE;
-		mpu_reg.Number = MPU_REGION_NUMBER10;
-		mpu_reg.BaseAddress = 0x90000000;
-		mpu_reg.Size = MPU_REGION_SIZE_16MB;
-		mpu_reg.SubRegionDisable = 0x00;
-		mpu_reg.AccessPermission = MPU_REGION_FULL_ACCESS;
-		mpu_reg.TypeExtField = MPU_TEX_LEVEL0;
-		mpu_reg.DisableExec = MPU_INSTRUCTION_ACCESS_DISABLE;
-		mpu_reg.IsCacheable = MPU_ACCESS_CACHEABLE;
-		mpu_reg.IsBufferable = MPU_ACCESS_NOT_BUFFERABLE;
-		mpu_reg.IsShareable = MPU_ACCESS_NOT_SHAREABLE;
+		if(false)
+		{
+			// Write through, no write allocate
+			mpu_reg.Enable = MPU_REGION_ENABLE;
+			mpu_reg.Number = MPU_REGION_NUMBER10;
+			mpu_reg.BaseAddress = 0x90000000;
+			mpu_reg.Size = MPU_REGION_SIZE_16MB;
+			mpu_reg.SubRegionDisable = 0x00;
+			mpu_reg.AccessPermission = MPU_REGION_FULL_ACCESS;
+			mpu_reg.TypeExtField = MPU_TEX_LEVEL0;
+			mpu_reg.DisableExec = MPU_INSTRUCTION_ACCESS_DISABLE;
+			mpu_reg.IsCacheable = MPU_ACCESS_CACHEABLE;
+			mpu_reg.IsBufferable = MPU_ACCESS_BUFFERABLE;
+			mpu_reg.IsShareable = MPU_ACCESS_NOT_SHAREABLE;
+		}
+		else
+		{
+			// Due to errata 2.2.1, disable cache
+
+			// Non-shareable device
+			mpu_reg.Enable = MPU_REGION_ENABLE;
+			mpu_reg.Number = MPU_REGION_NUMBER10;
+			mpu_reg.BaseAddress = 0x90000000;
+			mpu_reg.Size = MPU_REGION_SIZE_16MB;
+			mpu_reg.SubRegionDisable = 0x00;
+			mpu_reg.AccessPermission = MPU_REGION_FULL_ACCESS;
+			mpu_reg.TypeExtField = MPU_TEX_LEVEL2;
+			mpu_reg.DisableExec = MPU_INSTRUCTION_ACCESS_DISABLE;
+			mpu_reg.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
+			mpu_reg.IsBufferable = MPU_ACCESS_NOT_BUFFERABLE;
+			mpu_reg.IsShareable = MPU_ACCESS_NOT_SHAREABLE;
+		}
 		HAL_MPU_ConfigRegion(&mpu_reg);
 
 		// Peripherals

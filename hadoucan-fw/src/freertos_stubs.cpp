@@ -64,17 +64,61 @@ void vApplicationIdleHook( void )
     : "memory"
   );
 
+  // If JTAG is attached, keep clocks on during sleep
+  std::optional<uint32_t> DBGMCU_CR;
+  if( (CoreDebug->DHCSR & CoreDebug_DHCSR_C_DEBUGEN_Msk) != 0)
+  {
+    DBGMCU_CR = DBGMCU->CR;
+
+    DBGMCU->CR = DBGMCU_CR.value() 
+      | DBGMCU_CR_DBG_SLEEPD1
+      | DBGMCU_CR_DBG_STOPD1
+      | DBGMCU_CR_DBG_STANDBYD1
+      // | DBGMCU_CR_DBG_TRACECKEN
+      | DBGMCU_CR_DBG_CKD1EN
+      | DBGMCU_CR_DBG_CKD3EN
+    ;
+  }
+
   // Only enabled ISR or events cause wake
   // Clear deep sleep register, sleep normal
   // Do not sleep on return to thread mode
   CLEAR_BIT (SCB->SCR, SCB_SCR_SEVONPEND_Msk | SCB_SCR_SLEEPDEEP_Msk | SCB_SCR_SLEEPONEXIT_Msk);
 
-  // sync SCB write, WFI, sync/reload pipeline, enable ISR, sync/reload pipeline
-  // certain platforms can crash on complex wfi return if no isb after wfi (arm core bug? - https://cliffle.com/blog/stm32-wfi-bug/)
+  // sync DBGMCU & SCB write
   __asm__ volatile (
     "dsb\n"
+    : 
+    : 
+    : "memory"
+  );
+
+  // WFI, sync/reload pipeline
+  // certain platforms can crash on complex wfi return if no isb after wfi (arm core bug? - https://cliffle.com/blog/stm32-wfi-bug/)
+  __asm__ volatile (
     "wfi\n"
     "isb\n"
+    : 
+    : 
+    : "memory"
+  );
+
+  // restore clocks if needed
+  if(DBGMCU_CR.has_value())
+  {
+    DBGMCU->CR = DBGMCU_CR.value();
+
+    // sync DBGMCU write
+    __asm__ volatile (
+      "dsb\n"
+      : 
+      : 
+      : "memory"
+    );
+  }
+
+  // enable ISR, sync/reload pipeline
+  __asm__ volatile (
     "cpsie i\n"
     "isb\n"
     : 

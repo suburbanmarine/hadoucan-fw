@@ -197,6 +197,30 @@ void set_all_gpio_low_power()
 
 int main(void)
 {
+	// If JTAG is attached, keep clocks on during sleep
+	{
+		if( (CoreDebug->DHCSR & CoreDebug_DHCSR_C_DEBUGEN_Msk) != 0)
+		{
+			const uint32_t DBGMCU_CR = DBGMCU->CR;
+
+			DBGMCU->CR = DBGMCU_CR
+			  | DBGMCU_CR_DBG_SLEEPD1
+			  | DBGMCU_CR_DBG_STOPD1
+			  | DBGMCU_CR_DBG_STANDBYD1
+			  // | DBGMCU_CR_DBG_TRACECKEN
+			  | DBGMCU_CR_DBG_CKD1EN
+			  | DBGMCU_CR_DBG_CKD3EN
+			;
+
+			__asm__ volatile (
+				"dsb\n"
+				: 
+				: 
+				: "memory"
+			);
+		}
+	}
+	
 	//confg mpu
 	if(1)
 	{

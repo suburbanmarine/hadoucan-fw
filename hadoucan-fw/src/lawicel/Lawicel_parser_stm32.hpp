@@ -75,6 +75,12 @@ class Lawicel_parser_stm32 : public Lawicel_parser
 		uint32_t tmp = bbram_base[offset_in_words];
 		bbram_base[offset_in_words] = tmp;
 
+		if(offset_in_words > 1)
+		{
+			tmp = bbram_base[offset_in_words-1];
+			bbram_base[offset_in_words-1] = tmp;			
+		}
+
 		asm volatile(
 			"isb sy\n"
 			"dsb sy\n"

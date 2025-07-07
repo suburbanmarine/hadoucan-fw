@@ -611,20 +611,9 @@ int main(void)
 		__HAL_RCC_GPIOA_CLK_ENABLE();
 		__HAL_RCC_GPIOB_CLK_ENABLE();
 
-		GPIO_InitTypeDef GPIO_InitStruct = {0};
-		GPIO_InitStruct.Pin = CAN_SLOPE_Pin;
-		GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-		GPIO_InitStruct.Pull = GPIO_NOPULL;
-		GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
-		HAL_GPIO_WritePin(CAN_SLOPE_GPIO_Port, CAN_SLOPE_Pin, GPIO_PIN_RESET);
-		HAL_GPIO_Init(CAN_SLOPE_GPIO_Port, &GPIO_InitStruct);
-
-		GPIO_InitStruct.Pin = CAN_SILENT_Pin|CAN_STDBY_Pin;
-		GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-		GPIO_InitStruct.Pull = GPIO_NOPULL;
-		GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
-		HAL_GPIO_WritePin(GPIOB, CAN_SILENT_Pin|CAN_STDBY_Pin, GPIO_PIN_RESET);
-		HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+		STM32_fdcan_tx::set_can_slew_slow();
+		STM32_fdcan_tx::set_can_stdby();
+		STM32_fdcan_tx::set_can_silent();
 	}
 
 	main_task.launch("main_task", 15);

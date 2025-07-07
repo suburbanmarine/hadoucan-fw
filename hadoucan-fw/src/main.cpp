@@ -236,6 +236,13 @@ void halt_cpu()
 	}
 }
 
+#ifdef SEMIHOSTING
+extern "C"
+{
+	extern void initialise_monitor_handles();
+}
+#endif
+
 int main(void)
 {
 	// If JTAG is attached, keep clocks on during sleep
@@ -305,6 +312,16 @@ int main(void)
 			}
 		}
 	}
+
+	// Enable semihosting if requested
+	{
+		#ifdef SEMIHOSTING
+			initialise_monitor_handles();
+		#endif
+	}
+
+	SCB_InvalidateDCache();
+	SCB_InvalidateICache();
 
 	//confg mpu
 	if(1)

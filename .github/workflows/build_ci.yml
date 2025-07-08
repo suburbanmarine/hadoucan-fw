@@ -7,9 +7,6 @@ on:
   push:
     branches:
       - '**'
-  pull_request:
-    branches:
-      - '**'
 env:
   REGISTRY: ghcr.io
   BRANCH_NAME: ${{ github.head_ref || github.ref_name }} 
@@ -25,7 +22,7 @@ jobs:
 
     if: github.event_name == 'push'
 
-    runs-on: [self-hosted, linux, x64]
+    runs-on: [self-hosted, linux]
     timeout-minutes: 60
     continue-on-error: false
 

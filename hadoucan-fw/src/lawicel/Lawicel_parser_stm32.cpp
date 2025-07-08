@@ -622,7 +622,6 @@ bool Lawicel_parser_stm32::handle_ext_bootloader()
 	logger->log(LOG_LEVEL::debug, "Lawicel_parser_stm32::handle_ext_bootloader", "");
 
 	const Bootloader_key key = Bootloader_key::get_key_boot();
-	key.to_addr(reinterpret_cast<uint8_t*>(0x38800000));
 
 	//Disable ISR, sync
 	asm volatile(
@@ -632,7 +631,31 @@ bool Lawicel_parser_stm32::handle_ext_bootloader()
 		: /* no out */
 		: /* no in */
 		: "memory"
-		);
+	);
+
+	// Enable BBRAM write
+	HAL_PWR_EnableBkUpAccess();
+	asm volatile(
+		"isb sy\n"
+		"dsb sy\n"
+		: /* no out */
+		: /* no in */
+		: "memory"
+	);
+
+	// Write BBRAM
+	key.to_addr(reinterpret_cast<uint8_t*>(0x38800000));
+	ecc_flush_bbram_noisr_noenable(Bootloader_key::LENGTH_IN_BYTES);
+
+	// Disable BBRAM write
+	HAL_PWR_DisableBkUpAccess();
+	asm volatile(
+		"isb sy\n"
+		"dsb sy\n"
+		: /* no out */
+		: /* no in */
+		: "memory"
+	);
 
 	//reboot
 	NVIC_SystemReset();

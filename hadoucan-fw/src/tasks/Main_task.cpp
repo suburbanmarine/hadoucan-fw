@@ -81,7 +81,6 @@ void Main_task::work()
 			case 0x2003:
 			{
 				logger->log(LOG_LEVEL::info, "main", "Silicon rev V");
-				logger->log(LOG_LEVEL::warn, "main", "This silicon revision is not supported, but will be soon");
 				break;
 			}
 			default:

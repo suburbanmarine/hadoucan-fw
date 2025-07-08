@@ -7,6 +7,7 @@ on:
   push:
     branches:
       - '**'
+
 env:
   REGISTRY: ghcr.io
   BRANCH_NAME: ${{ github.head_ref || github.ref_name }} 
@@ -91,7 +92,7 @@ jobs:
     
     needs: build
 
-    if: github.event_name == 'create' && env.BRANCH_NAME_type == 'tag'
+    if: github.event_name == 'push' && github.ref_type == 'tag'
     
     steps:
     - name: Get artifact

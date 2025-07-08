@@ -7,14 +7,15 @@ on:
   push:
     branches:
       - '**'
-  pull_request:
-    branches:
-      - '**'
 env:
   REGISTRY: ghcr.io
   BRANCH_NAME: ${{ github.head_ref || github.ref_name }} 
   DOCKER_REPO: ghcr.io/${{ github.repository }}/hadoucan-fw-ci
   DOCKER_REPO_CACHE: ghcr.io/${{ github.repository }}/hadoucan-fw-ci-cache
+
+concurrency:
+  group: ${{ github.repository }}-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: false
 
 jobs:
   build:

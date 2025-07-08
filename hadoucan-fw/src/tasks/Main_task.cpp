@@ -29,11 +29,6 @@ namespace
 
 void Main_task::work()
 {
-	{
-		freertos_util::logging::Global_logger::set(&logging_task.get_logger());
-		freertos_util::logging::Global_logger::get()->set_sev_mask_level(freertos_util::logging::LOG_LEVEL::info);
-	}
-
 	freertos_util::logging::Logger* const logger = freertos_util::logging::Global_logger::get();
 
 	{

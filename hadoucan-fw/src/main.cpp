@@ -604,6 +604,13 @@ int main(void)
 		HAL_RCC_MCOConfig(RCC_MCO1, RCC_MCO1SOURCE_HSE, RCC_MCODIV_1);
 	}
 
+	// If the global logger is not set up, we cannot call STM32_fdcan_tx::set_can_slew_slow et all
+	if(1)
+	{
+		freertos_util::logging::Global_logger::set(&logging_task.get_logger());
+		freertos_util::logging::Global_logger::get()->set_sev_mask_level(freertos_util::logging::LOG_LEVEL::info);
+	}
+
 	//enable high speed for now
 	//TODO: make this config
 	if(1)

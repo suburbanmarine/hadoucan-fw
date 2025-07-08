@@ -16,12 +16,16 @@ env:
   DOCKER_REPO: ghcr.io/${{ github.repository }}/hadoucan-fw-ci
   DOCKER_REPO_CACHE: ghcr.io/${{ github.repository }}/hadoucan-fw-ci-cache
 
+concurrency:
+  group: ${{ github.repository }}-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: false
+
 jobs:
   build:
 
     if: github.event_name == 'push'
 
-    runs-on: [self-hosted, linux]
+    runs-on: [self-hosted, linux, x64]
     timeout-minutes: 60
     continue-on-error: false
 

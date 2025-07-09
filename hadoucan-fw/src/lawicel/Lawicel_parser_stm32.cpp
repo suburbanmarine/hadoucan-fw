@@ -701,3 +701,102 @@ bool Lawicel_parser_stm32::handle_ext_version()
 
 	return true;
 }
+
+bool Lawicel_parser_stm32::handle_ext_wipe_config()
+{
+	freertos_util::logging::Logger* const logger = freertos_util::logging::Global_logger::get();
+	
+	logger->log(LOG_LEVEL::debug, "Lawicel_parser_stm32::handle_ext_wipe_config", "");
+
+	// TODO: how to stop other threads
+
+	W25Q16JV& m_qspi = can_usb_app.get_flash();
+	W25Q16JV_conf_region& m_fs = can_usb_app.get_fs();
+
+	int ret = m_fs.unmount();
+	if(ret != LFS_ERR_OK)
+	{
+		logger->log(LOG_LEVEL::error, "Lawicel_parser_stm32::handle_ext_wipe_config", "Error unmounting flash");
+	}
+
+	logger->log(LOG_LEVEL::info, "Lawicel_parser_stm32::handle_ext_wipe_flash", "Starting config erase");
+
+	const size_t fs_start = m_fs.get_start_bytes();
+	const size_t fs_end = fs_start + m_fs.get_len_bytes();
+	for(size_t i = fs_start; i < fs_end; i += (64UL*1024UL) )
+	{
+		if( ! m_qspi.cmd_block64_erase(i) )
+		{
+			logger->log(LOG_LEVEL::error, "Lawicel_parser_stm32::handle_ext_wipe_config", "Error erasing block %zu", i);
+		}
+	}
+
+	logger->log(LOG_LEVEL::info, "Lawicel_parser_stm32::handle_ext_wipe_config", "Resetting");
+
+	// Disable ISR, sync
+	asm volatile(
+		"cpsid i\n"
+		"isb sy\n"
+		"dsb sy\n"
+		: /* no out */
+		: /* no in */
+		: "memory"
+	);
+
+	// Reset
+	NVIC_SystemReset();
+
+	for(;;)
+	{
+
+	}
+
+	return true;
+}
+
+bool Lawicel_parser_stm32::handle_ext_wipe_flash()
+{
+	freertos_util::logging::Logger* const logger = freertos_util::logging::Global_logger::get();
+	
+	logger->log(LOG_LEVEL::debug, "Lawicel_parser_stm32::handle_ext_wipe_flash", "");
+
+	// TODO: how to stop other threads
+
+	W25Q16JV& m_qspi = can_usb_app.get_flash();
+	W25Q16JV_conf_region& m_fs = can_usb_app.get_fs();
+
+	int ret = m_fs.unmount();
+	if(ret != LFS_ERR_OK)
+	{
+		logger->log(LOG_LEVEL::error, "Lawicel_parser_stm32::handle_ext_wipe_config", "Error unmounting flash");
+	}
+	
+	logger->log(LOG_LEVEL::info, "Lawicel_parser_stm32::handle_ext_wipe_flash", "Starting chip erase");
+
+	if( ! m_qspi.cmd_chip_erase() )
+	{
+		logger->log(LOG_LEVEL::error, "Lawicel_parser_stm32::handle_ext_wipe_flash", "Error erasing flash");
+	}
+
+	logger->log(LOG_LEVEL::info, "Lawicel_parser_stm32::handle_ext_wipe_flash", "Resetting");
+
+	// Disable ISR, sync
+	asm volatile(
+		"cpsid i\n"
+		"isb sy\n"
+		"dsb sy\n"
+		: /* no out */
+		: /* no in */
+		: "memory"
+	);
+
+	// Reset
+	NVIC_SystemReset();
+
+	for(;;)
+	{
+		
+	}
+
+	return true;
+}

@@ -31,6 +31,10 @@ void Main_task::work()
 {
 	freertos_util::logging::Logger* const logger = freertos_util::logging::Global_logger::get();
 
+	//led blink/strobe
+	led_task.set_mode_boot();
+	led_task.launch("led", 15);
+
 	{
 		CAN_USB_app::get_unique_id_str(&usb_id_str);
 		logger->log(LOG_LEVEL::info, "main", "Initialing");
@@ -101,7 +105,7 @@ void Main_task::work()
 		freertos_util::logging::Global_logger::get()->set_sev_mask_level(config_struct.log_level);
 	}
 
-	if(!init_usb())
+	if( ! init_usb() )
 	{
 		logger->log(LOG_LEVEL::error, "main", "USB init failed");
 	}
@@ -109,9 +113,6 @@ void Main_task::work()
 	//timesync processing
 	//currently config then no-op
 	timesync_task.launch("timesync", 1);
-
-	//led blink/strobe
-	led_task.launch("led", 1);
 
 	//CPU load & stack info
 	system_mon_task.launch("SysMon", 1);

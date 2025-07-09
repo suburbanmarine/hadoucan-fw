@@ -327,14 +327,14 @@ bool Main_task::mount_fs()
 
 		logger->log(LOG_LEVEL::info, "main", "Mounting flash fs");
 		int mount_ret = m_fs.mount();
-		if(mount_ret != SPIFFS_OK)
+		if(mount_ret != LFS_ERR_OK)
 		{
 			logger->log(LOG_LEVEL::error, "main", "Flash mount failed: %d", mount_ret);
 			logger->log(LOG_LEVEL::error, "main", "You will need to reload the config");
 
 			logger->log(LOG_LEVEL::info, "main", "Format flash");
 			int format_ret = m_fs.format();
-			if(format_ret != SPIFFS_OK)
+			if(format_ret != LFS_ERR_OK)
 			{
 				logger->log(LOG_LEVEL::fatal, "main", "Flash format failed: %d", format_ret);
 				logger->log(LOG_LEVEL::fatal, "main", "Try a power cycle, your board may be broken");
@@ -347,7 +347,7 @@ bool Main_task::mount_fs()
 
 			logger->log(LOG_LEVEL::info, "main", "Mounting flash fs");
 			mount_ret = m_fs.mount();
-			if(mount_ret != SPIFFS_OK)
+			if(mount_ret != LFS_ERR_OK)
 			{
 				logger->log(LOG_LEVEL::fatal, "main", "Flash mount failed right after we formatted it: %d", mount_ret);
 				logger->log(LOG_LEVEL::fatal, "main", "Try a power cycle, your board may be broken");

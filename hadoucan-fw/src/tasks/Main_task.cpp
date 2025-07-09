@@ -27,6 +27,26 @@ namespace
 	}
 }
 
+void Main_task::halt_on_error()
+{
+	// Halt all threads except led and blink
+
+	usb_rx_buffer_task.suspend();
+	usb_core_task.suspend();
+	usb_lawicel_task.suspend();
+	timesync_task.suspend();
+	logging_task.suspend();
+	system_mon_task.suspend();
+	stm32_fdcan_rx_task.suspend();
+
+	led_task.set_mode_error();
+
+	for(;;)
+	{
+		vTaskSuspend(nullptr);
+	}
+}
+
 void Main_task::work()
 {
 	freertos_util::logging::Logger* const logger = freertos_util::logging::Global_logger::get();
@@ -293,10 +313,7 @@ bool Main_task::mount_fs()
 		{
 			logger->log(LOG_LEVEL::error, "main", "m_qspi.init failed");
 
-			for(;;)
-			{
-				vTaskSuspend(nullptr);
-			}
+			halt_on_error();
 		}
 
 		m_fs.initialize();
@@ -340,10 +357,7 @@ bool Main_task::mount_fs()
 				logger->log(LOG_LEVEL::fatal, "main", "Flash format failed: %d", format_ret);
 				logger->log(LOG_LEVEL::fatal, "main", "Try a power cycle, your board may be broken");
 
-				for(;;)
-				{
-					vTaskSuspend(nullptr);
-				}
+				halt_on_error();
 			}
 
 			logger->log(LOG_LEVEL::info, "main", "Mounting flash fs");
@@ -353,10 +367,7 @@ bool Main_task::mount_fs()
 				logger->log(LOG_LEVEL::fatal, "main", "Flash mount failed right after we formatted it: %d", mount_ret);
 				logger->log(LOG_LEVEL::fatal, "main", "Try a power cycle, your board may be broken");
 
-				for(;;)
-				{
-					vTaskSuspend(nullptr);
-				}
+				halt_on_error();
 			}
 			else
 			{
@@ -368,19 +379,13 @@ bool Main_task::mount_fs()
 			{
 				logger->log(LOG_LEVEL::fatal, "main", "Writing default config failed");
 
-				for(;;)
-				{
-					vTaskSuspend(nullptr);
-				}
+				halt_on_error();
 			}
 			if(!can_usb_app.write_default_bitrate_table())
 			{
 				logger->log(LOG_LEVEL::fatal, "main", "Writing default bitrate table failed");
 
-				for(;;)
-				{
-					vTaskSuspend(nullptr);
-				}
+				halt_on_error();
 			}
 		}
 		else
@@ -405,10 +410,7 @@ bool Main_task::load_config()
 		{
 			logger->log(LOG_LEVEL::fatal, "main", "Writing default config load failed");
 
-			for(;;)
-			{
-				vTaskSuspend(nullptr);
-			}
+			halt_on_error();
 		}
 		else
 		{
@@ -428,10 +430,7 @@ bool Main_task::load_config()
 		{
 			logger->log(LOG_LEVEL::fatal, "main", "Writing default bitrate table failed");
 
-			for(;;)
-			{
-				vTaskSuspend(nullptr);
-			}
+			halt_on_error();
 		}
 		else
 		{

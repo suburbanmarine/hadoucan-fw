@@ -8,7 +8,7 @@
 LED_task::LED_task()
 {
 	set_mode_boot();
-	handle_boot_mode();
+	all_on();
 }
 
 void LED_task::set_mode_boot()

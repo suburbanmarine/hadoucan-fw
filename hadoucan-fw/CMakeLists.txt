@@ -72,7 +72,9 @@ target_link_libraries(hadoucan-fw.elf
 	spi_flash
 	spiffs_flash
 	spiffs_util
+	
 	lfs
+	lfs_util
 
 	crc
 

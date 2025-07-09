@@ -126,7 +126,7 @@ bool CAN_USB_app::write_default_bitrate_table()
 bool CAN_USB_app::load_xml_file(lfs_t* const fs, const char* name, tinyxml2::XMLDocument* const out_xml)
 {
 	lfs_info stat = { };
-	ret = lfs_stat(fs, name, &stat);
+	int ret = lfs_stat(fs, name, &stat);
 	if(ret != LFS_ERR_OK)
 	{
 		freertos_util::logging::Global_logger::get()->log(LOG_LEVEL::error, "CAN_USB_app", "Getting size of %s: %d", name, ret);
@@ -134,7 +134,7 @@ bool CAN_USB_app::load_xml_file(lfs_t* const fs, const char* name, tinyxml2::XML
 	}
 
 	lfs_file_t fd = { };
-	int ret = lfs_file_open(fs, &fd, name, LFS_O_RDONLY);
+	ret = lfs_file_open(fs, &fd, name, LFS_O_RDONLY);
 	if(ret != LFS_ERR_OK)
 	{
 		freertos_util::logging::Global_logger::get()->log(LOG_LEVEL::error, "CAN_USB_app", "Opening %s failed: %d", name, ret);
@@ -143,13 +143,13 @@ bool CAN_USB_app::load_xml_file(lfs_t* const fs, const char* name, tinyxml2::XML
 
 	std::vector<char> data;
 	data.resize(stat.size);
-	ret = lfs_file_read(fs, &fd, data.data(), data.size());
-	if(ret < 0)
+	lfs_ssize_t r_ret = lfs_file_read(fs, &fd, data.data(), data.size());
+	if(r_ret < 0)
 	{
-		freertos_util::logging::Global_logger::get()->log(LOG_LEVEL::error, "CAN_USB_app", "Reading %s failed: %d", name, ret);
+		freertos_util::logging::Global_logger::get()->log(LOG_LEVEL::error, "CAN_USB_app", "Reading %s failed: %zd", name, ssize_t(r_ret));
 		return false;
 	}
-	data.resize(ret);
+	data.resize(r_ret);
 
 	ret = lfs_file_close(fs, &fd);
 	if(ret != LFS_ERR_OK)

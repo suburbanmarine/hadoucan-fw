@@ -70,8 +70,6 @@ target_link_libraries(hadoucan-fw.elf
 	tinyxml2_util
 
 	spi_flash
-	spiffs_flash
-	spiffs_util
 	
 	lfs
 	lfs_util

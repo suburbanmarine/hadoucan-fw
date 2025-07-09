@@ -1,9 +1,6 @@
 [submodule "freertos_cpp_util"]
 	path = external/freertos_cpp_util
 	url = git@github.com:jacobschloss/freertos_cpp_util.git
-[submodule "external/spiffs"]
-	path = external/spiffs
-	url = https://github.com/pellepl/spiffs.git
 [submodule "external/tinyxml2"]
 	path = external/tinyxml2
 	url = https://github.com/leethomason/tinyxml2.git

@@ -75,6 +75,7 @@ target_link_libraries(hadoucan-fw.elf
 	
 	lfs
 	lfs_util
+	lfs_flash
 
 	crc
 

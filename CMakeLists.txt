@@ -35,13 +35,6 @@ add_definitions(
 	#-DGTEST_LINKED_AS_SHARED_LIBRARY=0
 	#-DGTEST_CREATE_SHARED_LIBRARY=0
 
-	-DSPIFFS_USE_MAGIC
-	-DSPIFFS_USE_MAGIC_LENGTH
-	-DSPIFFS_LOCK=spiffs_lock_dispatch
-	-DSPIFFS_UNLOCK=spiffs_unlock_dispatch
-	-DSPIFFS_HAL_CALLBACK_EXTRA
-	-DSPIFFS_ALIGNED_OBJECT_INDEX_TABLES=1
-
 	#we will provide the syscalls
 	#-D_REENT_ONLY
 	#-DREENTRANT_SYSCALLS_PROVIDED
@@ -53,18 +46,6 @@ include_directories(
 	hadoucan-fw/include
 	external/
 	external/mbedtls/include
-)
-
-add_library(spiffs
-	external/spiffs/src/spiffs_cache.c
-	external/spiffs/src/spiffs_check.c
-	external/spiffs/src/spiffs_gc.c
-	external/spiffs/src/spiffs_hydrogen.c
-	external/spiffs/src/spiffs_nucleus.c
-)
-
-target_include_directories(spiffs PUBLIC
-	external/spiffs/src
 )
 
 add_library(tinyusb_config INTERFACE)

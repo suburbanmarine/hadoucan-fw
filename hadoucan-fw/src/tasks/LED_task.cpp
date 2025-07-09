@@ -23,6 +23,10 @@ void LED_task::set_mode_error()
 {
 	m_mode = LED_MODE::ERROR;
 }
+void LED_task::set_mode_suspend()
+{
+	m_mode = LED_MODE::SUSPEND;
+}
 
 void LED_task::all_off()
 {
@@ -72,6 +76,11 @@ void LED_task::work()
 			{
 				handle_error_mode();
 				break;
+			}
+			case LED_MODE::SUSPEND:
+			{
+				handle_suspend_mode();
+				break;			
 			}
 			default:
 			{
@@ -138,4 +147,8 @@ void LED_task::handle_error_mode()
 {
 	HAL_GPIO_WritePin(GPIOD, GREEN1_Pin | GREEN2_Pin | RED2_Pin, GPIO_PIN_SET);
 	HAL_GPIO_WritePin(GPIOD, RED1_Pin, GPIO_PIN_RESET);
+}
+void LED_task::handle_suspend_mode()
+{
+	all_off();
 }

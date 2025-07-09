@@ -96,6 +96,23 @@ target_link_libraries(tinyusb_dcd
 		stm32h750xx_cmsis
 )
 
+add_library(lfs
+	${PROJECT_SOURCE_DIR}/external/littlefs/lfs.c
+	${PROJECT_SOURCE_DIR}/external/littlefs/lfs_util.c
+)
+
+target_include_directories(lfs
+PUBLIC
+    ${PROJECT_SOURCE_DIR}/external/littlefs
+)
+
+target_compile_definitions(lfs
+PUBLIC
+	-DLFS_THREADSAFE
+	-DLFS_MULTIVERSION
+	-DLFS_MIGRATE
+)
+
 add_subdirectory(hadoucan-fw)
 
 add_subdirectory(external/crc)

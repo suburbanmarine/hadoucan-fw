@@ -37,3 +37,6 @@
 [submodule "external/tinyusb"]
 	path = external/tinyusb
 	url = git@github.com:suburbanmarine/tinyusb.git
+[submodule "external/littlefs"]
+	path = external/littlefs
+	url = git@github.com:suburbanmarine/littlefs.git

@@ -581,9 +581,9 @@ int main(void)
 	HAL_PWREx_EnableBkUpReg();
 
 	MX_GPIO_Init();
-	MX_CRC_Init();
-	MX_HASH_Init();
-	MX_RNG_Init();
+	// MX_CRC_Init();
+	// MX_HASH_Init();
+	// MX_RNG_Init();
 	// MX_TIM3_Init();
 	MX_USART1_UART_Init();
 	// MX_FDCAN1_Init();

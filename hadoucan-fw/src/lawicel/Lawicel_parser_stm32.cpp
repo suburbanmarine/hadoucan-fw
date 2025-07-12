@@ -7,6 +7,9 @@
 
 #include "common_util/Byte_util.hpp"
 #include "common_util/Comparison_util.hpp"
+#include "common_util/Stack_string.hpp"
+
+#include "sw_ver.hpp"
 
 #include "freertos_cpp_util/logging/Global_logger.hpp"
 
@@ -691,13 +694,10 @@ bool Lawicel_parser_stm32::handle_ext_version()
 	std::array<uint8_t, 4> ver;
 	handle_get_version(&ver);
 
-	std::array<uint8_t, 7> resp;
-	resp[0] = 'V';
-	std::copy_n(ver.data(), 4, resp.data()+1);
-	resp[5] = '\r';
-	resp[6] = '\0';
+	Stack_string<96> str; //8+4+(3*10)+40+1
+	int ret = str.sprintf("release-%d.%d.%d:%s\r", SW_VER_MAJOR, SW_VER_MINOR, SW_VER_PATCH, GIT_SHA1);
 
-	write_string((char*)(resp.data()));
+	write_string(str.data());
 
 	return true;
 }

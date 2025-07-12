@@ -733,18 +733,7 @@ bool Lawicel_parser_stm32::handle_ext_wipe_config()
 
 	logger->log(LOG_LEVEL::info, "Lawicel_parser_stm32::handle_ext_wipe_config", "Resetting");
 
-	// Disable ISR, sync
-	asm volatile(
-		"cpsid i\n"
-		"isb sy\n"
-		"dsb sy\n"
-		: /* no out */
-		: /* no in */
-		: "memory"
-	);
-
-	// Reset
-	NVIC_SystemReset();
+	handle_ext_bootloader();
 
 	for(;;)
 	{

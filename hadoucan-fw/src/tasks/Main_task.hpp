@@ -19,6 +19,8 @@ public:
 
 protected:
 	
+	void test_lfs_move_handle();
+
 	void halt_on_error();
 
 	bool handle_usb_set_config(const uint8_t config);

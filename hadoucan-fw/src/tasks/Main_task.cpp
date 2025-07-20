@@ -15,6 +15,8 @@
 #include "stm32h7xx_hal.h"
 #include "main.h"
 
+#include "lfs_file_move.h"
+
 #include <cinttypes>
 
 using freertos_util::logging::LOG_LEVEL;
@@ -25,6 +27,53 @@ namespace
 	{
 		return usb_lawicel_task.get_lawicel()->queue_rx_packet(str);
 	}
+}
+
+void Main_task::test_lfs_move_handle()
+{
+	W25Q16JV& m_qspi = can_usb_app.get_flash();
+	W25Q16JV_conf_region& m_fs = can_usb_app.get_fs();
+
+	lfs_file_t fd_a = { };
+	int ret = lfs_file_open(m_fs, &fd_a, "fd_a", LFS_O_CREAT | LFS_O_TRUNC | LFS_O_RDWR);
+	if(ret != LFS_ERR_OK)
+	{
+		for(;;)
+		{
+
+		}
+	}
+	
+	lfs_file_t fd_b = { };
+	ret = lfs_file_open(m_fs, &fd_b, "fd_b", LFS_O_CREAT | LFS_O_TRUNC | LFS_O_RDWR);
+	if(ret != LFS_ERR_OK)
+	{
+		for(;;)
+		{
+
+		}
+	}
+
+	lfs_file_t fd_c = { };
+	ret = lfs_file_open(m_fs, &fd_c, "fd_c", LFS_O_CREAT | LFS_O_TRUNC | LFS_O_RDWR);
+	if(ret != LFS_ERR_OK)
+	{
+		for(;;)
+		{
+
+		}
+	}
+
+	lfs_file_t fd_b_new = { };
+	ret = lfs_file_movehandle(m_fs.get_fs(), &fd_b, &fd_b_new);
+	if(ret != LFS_ERR_OK)
+	{
+		for(;;)
+		{
+
+		}
+	}
+
 }
 
 void Main_task::halt_on_error()

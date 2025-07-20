@@ -74,6 +74,42 @@ void Main_task::test_lfs_move_handle()
 		}
 	}
 
+	ret = lfs_file_ishandleopen(m_fs.get_fs(), &fd_a);
+	if(ret != LFS_ERR_OK)
+	{
+		for(;;)
+		{
+
+		}
+	}
+
+	ret = lfs_file_ishandleopen(m_fs.get_fs(), &fd_b);
+	if(ret != LFS_ERR_BADF)
+	{
+		for(;;)
+		{
+
+		}
+	}
+
+	ret = lfs_file_ishandleopen(m_fs.get_fs(), &fd_b_new);
+	if(ret != LFS_ERR_OK)
+	{
+		for(;;)
+		{
+
+		}
+	}
+
+	ret = lfs_file_ishandleopen(m_fs.get_fs(), &fd_c);
+	if(ret != LFS_ERR_OK)
+	{
+		for(;;)
+		{
+
+		}
+	}
+
 	ret = lfs_file_close(m_fs.get_fs(), &fd_a);
 	if(ret != LFS_ERR_OK)
 	{
@@ -82,7 +118,7 @@ void Main_task::test_lfs_move_handle()
 
 		}
 	}
-	ret = lfs_file_close(m_fs.get_fs(), &fd_b);
+	ret = lfs_file_close(m_fs.get_fs(), &fd_b_new);
 	if(ret != LFS_ERR_OK)
 	{
 		for(;;)
@@ -472,6 +508,8 @@ bool Main_task::mount_fs()
 			logger->log(LOG_LEVEL::info, "main", "Flash mount ok");
 		}
 	}
+
+	// test_lfs_move_handle();
 
 	return true;
 }

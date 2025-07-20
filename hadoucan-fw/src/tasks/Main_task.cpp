@@ -35,7 +35,7 @@ void Main_task::test_lfs_move_handle()
 	W25Q16JV_conf_region& m_fs = can_usb_app.get_fs();
 
 	lfs_file_t fd_a = { };
-	int ret = lfs_file_open(m_fs, &fd_a, "fd_a", LFS_O_CREAT | LFS_O_TRUNC | LFS_O_RDWR);
+	int ret = lfs_file_open(m_fs.get_fs(), &fd_a, "fd_a", LFS_O_CREAT | LFS_O_TRUNC | LFS_O_RDWR);
 	if(ret != LFS_ERR_OK)
 	{
 		for(;;)
@@ -43,9 +43,9 @@ void Main_task::test_lfs_move_handle()
 
 		}
 	}
-	
+
 	lfs_file_t fd_b = { };
-	ret = lfs_file_open(m_fs, &fd_b, "fd_b", LFS_O_CREAT | LFS_O_TRUNC | LFS_O_RDWR);
+	ret = lfs_file_open(m_fs.get_fs(), &fd_b, "fd_b", LFS_O_CREAT | LFS_O_TRUNC | LFS_O_RDWR);
 	if(ret != LFS_ERR_OK)
 	{
 		for(;;)
@@ -55,7 +55,7 @@ void Main_task::test_lfs_move_handle()
 	}
 
 	lfs_file_t fd_c = { };
-	ret = lfs_file_open(m_fs, &fd_c, "fd_c", LFS_O_CREAT | LFS_O_TRUNC | LFS_O_RDWR);
+	ret = lfs_file_open(m_fs.get_fs(), &fd_c, "fd_c", LFS_O_CREAT | LFS_O_TRUNC | LFS_O_RDWR);
 	if(ret != LFS_ERR_OK)
 	{
 		for(;;)
@@ -74,6 +74,36 @@ void Main_task::test_lfs_move_handle()
 		}
 	}
 
+	ret = lfs_file_close(m_fs.get_fs(), &fd_a);
+	if(ret != LFS_ERR_OK)
+	{
+		for(;;)
+		{
+
+		}
+	}
+	ret = lfs_file_close(m_fs.get_fs(), &fd_b);
+	if(ret != LFS_ERR_OK)
+	{
+		for(;;)
+		{
+
+		}
+	}
+
+	ret = lfs_file_close(m_fs.get_fs(), &fd_c);
+	if(ret != LFS_ERR_OK)
+	{
+		for(;;)
+		{
+
+		}
+	}
+
+	for(;;)
+	{
+
+	}
 }
 
 void Main_task::halt_on_error()

@@ -201,7 +201,7 @@ void CAN_USB_app_bitrate_table::set_defualt()
 		table_80mhz.m_data_table[entry.rate] = entry;
 
 		entry.rate  = 8000000;
-		entry.pre   = 4;
+		entry.pre   = 1;
 		entry.tseg1 = 7;
 		entry.tseg2 = 2;
 		entry.sjw   = 1;
